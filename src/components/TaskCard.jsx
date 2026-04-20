@@ -2,39 +2,36 @@ import { useDraggable } from "@dnd-kit/core";
 import { useContext } from "react";
 import { TaskContext } from "../contexts/TaskContext";
 
-function TaskCard({ task, openModal, activeTask, isOverlay }) {
+function TaskCard({ task, openModal, activeTask }) {
 
     const { deleteTask } = useContext(TaskContext);
 
-    const isDragging = Number(activeTask?.id) === Number(task.id);
-    const dragabble = !isOverlay
-        ? useDraggable({
-            id: task.id
-        }) : {}
+    const isDragging = activeTask?.id === task.id;
 
     const {
         attributes,
         listeners,
         setNodeRef,
         transform
-    } = dragabble;
+    } = useDraggable({
+        id: task.id
+    });
 
-    const style = isOverlay && transform
-        ? {
-            transform: `translate(${transform.x}px, ${transform.y}px)`
-        } : undefined;
+    const style = transform ? {
+        transform: `translate(${transform.x}px, ${transform.y}px)`
+    } : undefined;
 
     return (
         <div
             ref={setNodeRef}
-            {...(attributes || {})}
+            {...attributes}
             style={style}
             onClick={() => openModal(task)}
             className={`flex items-start gap-3 bg-white p-3 rounded-xl border-l-4 
                 cursor-pointer hover:shadow-md transition
-                ${isDragging ? "opacity-0" : task.status === "done" ? "opacity-60" : ""}
+                ${isDragging ? "opacity-0" : ""}
                 ${task.status === "done"
-                    ? "border-gray-300"
+                    ? "border-gray-300 opacity-60"
                     : task.priority === "high"
                         ? "border-red-500"
                         : task.priority === "medium"
@@ -46,7 +43,7 @@ function TaskCard({ task, openModal, activeTask, isOverlay }) {
         >
 
             <span
-                {...(listeners || {})}
+                {...listeners}
                 className="cursor-grab font-semibold text-gray-400 hover:text-gray-700"
             >
                 ☰
