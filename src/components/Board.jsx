@@ -2,7 +2,14 @@ import { useContext, useEffect, useState } from "react"
 import Column from "./Column"
 import TaskForm from "./TaskForm";
 import CardModal from "./CardModal";
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import {
+    DndContext,
+    DragOverlay,
+    useSensor,
+    useSensors,
+    PointerSensor,
+    TouchSensor
+} from "@dnd-kit/core";
 import { TaskContext } from "../contexts/TaskContext";
 import TaskCard from "./TaskCard";
 
@@ -19,6 +26,16 @@ function Board() {
         columnTitle: "Done",
         columnStatus: "done"
     }]
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 150,
+                tolerance: 5
+            }
+        })
+    )
 
     const { tasks, updateTask } = useContext(TaskContext);
 
@@ -62,6 +79,7 @@ function Board() {
 
     return (
         <DndContext
+            sensors={sensors}
             onDragEnd={handleDragEnd}
             onDragStart={handleDragStart}
         >
