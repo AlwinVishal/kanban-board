@@ -6,7 +6,7 @@ function TaskCard({ task, openModal, activeTask }) {
 
     const { deleteTask } = useContext(TaskContext);
 
-    const isDragging = activeTask?.id === task.id;
+    const isDragging = Number(activeTask?.id) === Number(task.id);
 
     const {
         attributes,
@@ -29,9 +29,9 @@ function TaskCard({ task, openModal, activeTask }) {
             onClick={() => openModal(task)}
             className={`flex items-start gap-3 bg-white p-3 rounded-xl border-l-4 
                 cursor-pointer hover:shadow-md transition
-                ${isDragging ? "opacity-0" : ""}
+                ${isDragging ? "opacity-0" : task.status === "done" ? "opacity-60" : ""}
                 ${task.status === "done"
-                    ? "border-gray-300 opacity-60"
+                    ? "border-gray-300"
                     : task.priority === "high"
                         ? "border-red-500"
                         : task.priority === "medium"
