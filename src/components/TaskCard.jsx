@@ -2,29 +2,32 @@ import { useDraggable } from "@dnd-kit/core";
 import { useContext } from "react";
 import { TaskContext } from "../contexts/TaskContext";
 
-function TaskCard({ task, openModal, activeTask }) {
+function TaskCard({ task, openModal, activeTask, isOverlay }) {
 
     const { deleteTask } = useContext(TaskContext);
 
     const isDragging = Number(activeTask?.id) === Number(task.id);
+    const dragabble = !isOverlay
+        ? useDraggable({
+            id: task.id
+        }) : {}
 
     const {
         attributes,
         listeners,
         setNodeRef,
         transform
-    } = useDraggable({
-        id: task.id
-    });
+    } = dragabble;
 
-    const style = transform ? {
-        transform: `translate(${transform.x}px, ${transform.y}px)`
-    } : undefined;
+    const style = isOverlay && transform
+        ? {
+            transform: `translate(${transform.x}px, ${transform.y}px)`
+        } : undefined;
 
     return (
         <div
             ref={setNodeRef}
-            {...attributes}
+            {...(attributes || {})}
             style={style}
             onClick={() => openModal(task)}
             className={`flex items-start gap-3 bg-white p-3 rounded-xl border-l-4 
@@ -43,7 +46,7 @@ function TaskCard({ task, openModal, activeTask }) {
         >
 
             <span
-                {...listeners}
+                {...(listeners || {})}
                 className="cursor-grab font-semibold text-gray-400 hover:text-gray-700"
             >
                 ☰

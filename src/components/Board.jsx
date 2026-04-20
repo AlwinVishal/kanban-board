@@ -128,6 +128,7 @@ function Board() {
                         <TaskCard
                             task={activeTask}
                             openModal={() => { }}
+                            isOverlay
                         />
                     ) : null
                 }
